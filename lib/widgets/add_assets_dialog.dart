@@ -1,3 +1,4 @@
+import 'package:cripto_x/controller/assets_controller.dart';
 import 'package:cripto_x/models/api_response.dart';
 import 'package:cripto_x/services/http_service.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ class AddAssetDialogController extends GetxController {
   RxBool loading = false.obs;
   RxList<String> assets = <String>[].obs;
   RxString selectedAsset = ''.obs;
+  RxDouble assetValue = 0.0.obs;
 
   @override
   void onInit() {
@@ -67,20 +69,56 @@ class AddAssetDialog extends StatelessWidget {
         ),
       );
     } else {
-      return Column(
-        children: [
-          DropdownButton(
-              value: controller.selectedAsset.value,
-              items: controller.assets
-                  .map(
-                    (assets) => DropdownMenuItem(
-                      value: assets,
-                      child: Text(assets),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {})
-        ],
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            DropdownButton(
+                value: controller.selectedAsset.value,
+                items: controller.assets
+                    .map(
+                      (assets) => DropdownMenuItem(
+                        value: assets,
+                        child: Text(assets),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    controller.selectedAsset.value = value;
+                  }
+                }),
+            TextField(
+              onChanged: (value) {
+                controller.assetValue.value = double.parse(value);
+              },
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+            MaterialButton(
+              onPressed: () {
+                AssetsController assetsController = Get.find();
+                assetsController.addTrackedAsset(
+                  controller.selectedAsset.value,
+                  controller.assetValue.value,
+                );
+                Get.back(closeOverlays: true);
+              },
+              color: Theme.of(context).colorScheme.primary,
+              child: const Text(
+                'Add Asset',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            )
+          ],
+        ),
       );
     }
   }

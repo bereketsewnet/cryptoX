@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:cripto_x/models/api_response.dart';
 import 'package:cripto_x/models/coin_data.dart';
 import 'package:cripto_x/models/tracked_asset.dart';
 import 'package:cripto_x/services/http_service.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AssetsController extends GetxController {
   RxList<CoinData> coinData = <CoinData>[].obs;
@@ -13,7 +16,7 @@ class AssetsController extends GetxController {
   void onInit() {
     super.onInit();
     _getAssets();
-   // _loadTrackedAssetsFromStorage();
+    _loadTrackedAssetsFromStorage();
   }
 
   Future<void> _getAssets() async {
@@ -35,28 +38,28 @@ class AssetsController extends GetxController {
         amount: amount,
       ),
     );
-    // List<String> data =
-    // trackedAssets.map((asset) => jsonEncode(asset)).toList();
-    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await prefs.setStringList(
-    //   "tracked_assets",
-    //   data,
-    // );
+    List<String> data =
+    trackedAssets.map((asset) => jsonEncode(asset)).toList();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(
+      "tracked_assets",
+      data,
+    );
   }
 
-  // void _loadTrackedAssetsFromStorage() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   List<String>? data = prefs.getStringList("tracked_assets");
-  //   if (data != null) {
-  //     trackedAssets.value = data
-  //         .map(
-  //           (e) => TrackedAsset.fromJson(
-  //         jsonDecode(e),
-  //       ),
-  //     )
-  //         .toList();
-  //   }
-  // }
+  void _loadTrackedAssetsFromStorage() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? data = prefs.getStringList("tracked_assets");
+    if (data != null) {
+      trackedAssets.value = data
+          .map(
+            (e) => TrackedAsset.fromJson(
+          jsonDecode(e),
+        ),
+      )
+          .toList();
+    }
+  }
 
   double getPortfolioValue() {
     if (coinData.isEmpty) {

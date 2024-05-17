@@ -29,9 +29,7 @@ class DetailsPage extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery
-              .sizeOf(context)
-              .width * 0.02,
+          horizontal: MediaQuery.sizeOf(context).width * 0.02,
         ),
         child: Column(
           children: [
@@ -45,9 +43,7 @@ class DetailsPage extends StatelessWidget {
 
   Widget _assetPrice(BuildContext context) {
     return SizedBox(
-      height: MediaQuery
-          .sizeOf(context)
-          .height * 0.10,
+      height: MediaQuery.sizeOf(context).height * 0.10,
       child: Row(
         children: [
           Padding(
@@ -66,12 +62,13 @@ class DetailsPage extends StatelessWidget {
                   ),
                 ),
                 TextSpan(
-                  text: '${coin.values?.uSD?.percentChange24h?.toStringAsFixed(
-                      2)} \%',
+                  text:
+                      '${coin.values?.uSD?.percentChange24h?.toStringAsFixed(2)} \%',
                   style: TextStyle(
                     fontSize: 15,
-                    color: coin.values!.uSD!.percentChange24h! > 0 ? Colors
-                        .green : Colors.red,
+                    color: coin.values!.uSD!.percentChange24h! > 0
+                        ? Colors.green
+                        : Colors.red,
                   ),
                 ),
               ],
@@ -85,11 +82,59 @@ class DetailsPage extends StatelessWidget {
   Widget _assetInfo(BuildContext context) {
     return Expanded(
         child: GridView(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.9,
-          ),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.9,
+      ),
+      children: [
+        _infoCard(
+          'Circulating Supply',
+          coin.circulatingSupply.toString(),
+        ),
+        _infoCard(
+          'Maximum Supply',
+          coin.maxSupply.toString(),
+        ),
+        _infoCard(
+          'Total Supply',
+          coin.totalSupply.toString(),
+        ),
+      ],
+    ));
+  }
 
-        ));
+  Widget _infoCard(String title, String subtitle) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 10,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.black12,
+        borderRadius: BorderRadius.circular(
+          15,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          Text(
+            subtitle,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
